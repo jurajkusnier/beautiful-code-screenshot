@@ -13,8 +13,29 @@
     <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/best-practices-for-listing.html#plugin-description -->
     <description><![CDATA[
-        Creates a beautiful image from selected code
-    ]]></description>
+  <p>Turn your selected code into a stunning, shareable image — right inside your IDE.</p>
+
+  <p>Select any code, right-click, and choose <b>Make a Screenshot</b>. The plugin renders your
+  code with full syntax highlighting from your current color scheme, wrapped in a macOS-style
+  window with rounded corners, a drop shadow, and traffic light buttons.</p>
+
+  <h3>Features</h3>
+  <ul>
+    <li><b>Syntax-accurate rendering</b> — uses your IDE's own highlighter, output matches what you see</li>
+    <li><b>Background presets</b> — transparent, 8 solid colors, or 8 beautiful gradients</li>
+    <li><b>Remembers your last choice</b> — background selection persists across sessions</li>
+    <li><b>Copy to clipboard</b> — paste directly into Slack, Twitter, Notion, or any tool</li>
+    <li><b>Save as PNG</b> — export to a file with a native save dialog</li>
+    <li><b>No external dependencies</b> — runs locally, no cloud, no accounts required</li>
+  </ul>
+
+  <h3>Perfect for</h3>
+  <ul>
+    <li>Sharing code snippets on social media</li>
+    <li>Writing blog posts or documentation</li>
+    <li>Code reviews and presentations</li>
+  </ul>
+  ]]></description>
 
     <!-- Product and plugin compatibility requirements.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->

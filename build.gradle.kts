@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.juraj"
-version = "1.0-SNAPSHOT"
+version = "1.0.0"
 
 repositories {
     mavenCentral()
@@ -30,6 +30,7 @@ intellijPlatform {
     pluginConfiguration {
         ideaVersion {
             sinceBuild = "251"
+            untilBuild = provider { null }
         }
 
         changeNotes = """
