@@ -1,6 +1,8 @@
 package com.juraj.screenshot
 
 import com.intellij.ide.util.PropertiesComponent
+import com.intellij.notification.NotificationGroupManager
+import com.intellij.notification.NotificationType
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.fileChooser.FileChooserFactory
 import com.intellij.openapi.fileChooser.FileSaverDescriptor
@@ -139,6 +141,10 @@ class PreviewDialog(
             override fun actionPerformed(e: ActionEvent) {
                 copyToClipboard()
                 close(OK_EXIT_CODE)
+                NotificationGroupManager.getInstance()
+                    .getNotificationGroup("Beautiful Code Screenshot")
+                    .createNotification("Image has been copied to clipboard", NotificationType.INFORMATION)
+                    .notify(project)
             }
         },
         object : AbstractAction("Save as PNG") {
