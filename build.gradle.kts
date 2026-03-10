@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.juraj"
-version = "1.0.0"
+version = "1.1.0"
 
 repositories {
     mavenCentral()
@@ -34,7 +34,12 @@ intellijPlatform {
         }
 
         changeNotes = """
-            Initial version
+            1.1.0
+            - Title bar now displays the optional file name that can be edited in the preview widnow
+            - Notification balloon confirms when an image is copied to clipboard
+
+            1.0.0
+            - Initial release
         """.trimIndent()
     }
 }

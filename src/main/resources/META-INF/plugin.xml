@@ -24,6 +24,7 @@
     <li><b>Syntax-accurate rendering</b> — uses your IDE's own highlighter, output matches what you see</li>
     <li><b>Background presets</b> — transparent, 8 solid colors, or 8 beautiful gradients</li>
     <li><b>Remembers your last choice</b> — background selection persists across sessions</li>
+    <li><b>File name in the title bar</b> — shown by default, editable or removable right in the preview</li>
     <li><b>Copy to clipboard</b> — paste directly into Slack, Twitter, Notion, or any tool</li>
     <li><b>Save as PNG</b> — export to a file with a native save dialog</li>
     <li><b>No external dependencies</b> — runs locally, no cloud, no accounts required</li>
