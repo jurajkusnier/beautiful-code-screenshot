@@ -9,7 +9,7 @@ import java.awt.image.BufferedImage
 
 object CodeImageRenderer {
 
-    fun render(editor: Editor): BufferedImage {
+    fun render(editor: Editor, titleText: String? = null): BufferedImage {
         val selectionModel = editor.selectionModel
         val startOffset = selectionModel.selectionStart
         val endOffset = selectionModel.selectionEnd
@@ -122,6 +122,17 @@ object CodeImageRenderer {
 
         g.color = JBColor(0x27C93F, 0x27C93F)
         g.fillOval(closeX + 44, circleY, circleDiameter, circleDiameter)
+
+        // Title text centered in the title bar
+        if (!titleText.isNullOrEmpty()) {
+            g.font = Font(Font.SANS_SERIF, Font.PLAIN, 13)
+            g.color = editor.colorsScheme.defaultForeground
+            val fm = g.fontMetrics
+            val textX = windowX + (windowWidth - fm.stringWidth(titleText)) / 2
+            val circleCenter = circleY + circleDiameter / 2
+            val textY = circleCenter + (fm.ascent - fm.descent) / 2
+            g.drawString(titleText, textX, textY)
+        }
 
         // Restore selection (not visible in the rendered image)
         selectionModel.setSelection(startOffset, endOffset)

@@ -1,6 +1,7 @@
 package com.juraj.screenshot
 
 import com.intellij.ide.util.PropertiesComponent
+import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.fileChooser.FileChooserFactory
 import com.intellij.openapi.fileChooser.FileSaverDescriptor
 import com.intellij.openapi.project.Project
@@ -28,15 +29,25 @@ import java.awt.geom.RoundRectangle2D
 import java.awt.image.BufferedImage
 import javax.imageio.ImageIO
 import javax.swing.*
+import javax.swing.event.DocumentEvent
+import javax.swing.event.DocumentListener
 
 class PreviewDialog(
     private val project: Project?,
-    private val windowImage: BufferedImage
+    private val editor: Editor,
+    private val defaultTitle: String,
 ) : DialogWrapper(project) {
 
     private var currentBackground: Background = loadBackground()
     private val swatches = mutableListOf<Swatch>()
     private lateinit var imageLabel: JLabel
+    private lateinit var titleCheckbox: JCheckBox
+    private lateinit var titleTextField: JTextField
+
+    private var windowImage: BufferedImage = CodeImageRenderer.render(
+        editor,
+        defaultTitle.ifEmpty { null }
+    )
 
     init {
         title = "Beautiful Code Screenshot"
@@ -45,15 +56,36 @@ class PreviewDialog(
     }
 
     override fun createNorthPanel(): JComponent {
-        val panel = JPanel(FlowLayout(FlowLayout.LEFT, 4, 8))
+        val swatchRow = JPanel(FlowLayout(FlowLayout.LEFT, 4, 8))
 
-        panel.add(swatch(Background.Transparent))
-        for (bg in Background.SOLID_PRESETS) panel.add(swatch(bg))
+        swatchRow.add(swatch(Background.Transparent))
+        for (bg in Background.SOLID_PRESETS) swatchRow.add(swatch(bg))
+        swatchRow.add(separator())
+        for (bg in Background.GRADIENT_PRESETS) swatchRow.add(swatch(bg))
 
-        panel.add(separator())
+        val showTitle = defaultTitle.isNotEmpty()
+        titleCheckbox = JCheckBox("Title", showTitle)
+        titleTextField = JTextField(defaultTitle, 24)
+        titleTextField.isEnabled = showTitle
 
-        for (bg in Background.GRADIENT_PRESETS) panel.add(swatch(bg))
+        titleCheckbox.addActionListener {
+            titleTextField.isEnabled = titleCheckbox.isSelected
+            rerender()
+        }
+        titleTextField.document.addDocumentListener(object : DocumentListener {
+            override fun insertUpdate(e: DocumentEvent) = rerender()
+            override fun removeUpdate(e: DocumentEvent) = rerender()
+            override fun changedUpdate(e: DocumentEvent) = rerender()
+        })
 
+        val titleRow = JPanel(FlowLayout(FlowLayout.LEFT, 4, 2))
+        titleRow.add(titleCheckbox)
+        titleRow.add(titleTextField)
+
+        val panel = JPanel()
+        panel.layout = BoxLayout(panel, BoxLayout.Y_AXIS)
+        panel.add(swatchRow)
+        panel.add(titleRow)
         return panel
     }
 
@@ -88,6 +120,20 @@ class PreviewDialog(
         }
     }
 
+    private fun currentTitleText(): String? =
+        if (titleCheckbox.isSelected) titleTextField.text.ifEmpty { null } else null
+
+    private fun rerender() {
+        windowImage = CodeImageRenderer.render(editor, currentTitleText())
+        updatePreview()
+    }
+
+    private fun updatePreview() {
+        imageLabel.icon = ImageIcon(scaleForDisplay(compositeForDisplay(currentBackground)))
+        imageLabel.revalidate()
+        imageLabel.repaint()
+    }
+
     override fun createActions(): Array<Action> = arrayOf(
         object : AbstractAction("Copy to Clipboard") {
             override fun actionPerformed(e: ActionEvent) {
@@ -107,9 +153,7 @@ class PreviewDialog(
         currentBackground = background
         saveBackground(background)
         swatches.forEach { it.isSelected = (it.bg == background) }
-        imageLabel.icon = ImageIcon(scaleForDisplay(compositeForDisplay(background)))
-        imageLabel.revalidate()
-        imageLabel.repaint()
+        updatePreview()
     }
 
     /** Composites a background behind the window image for on-screen display.
